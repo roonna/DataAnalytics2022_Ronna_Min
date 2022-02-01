@@ -108,6 +108,7 @@ attach(GRUMP_data)
 fix(GRUMP_data)
 # first column is already set to be names
 
+# MEAN SQ KM DATA ------
 # explore mean extent sq km data
   # and remove NA or empty strings
 mean_km <- GRUMP_data$Mean.Extent..sq.km.[!GRUMP_data$Mean.Extent..sq.km.==""]
@@ -142,5 +143,42 @@ rug(filtered_mean_km)
 un_regions <- GRUMP_data$UNRegion[!GRUMP_data$UNRegion==""]
 hist(filtered_mean_km[!un_regions=="Caribbean"], seq(0., 1000., 10.0))
 rug(filtered_mean_km)
+
+
+# MEAN POPULATION DATA ------
+# explore mean population data
+# and remove NA or empty strings
+mean_pop <- GRUMP_data$Mean.Point..pop.[!GRUMP_data$Mean.Point..pop.==""]
+mean_pop <- mean_pop[!is.na(mean_pop)]
+mean_pop <- as.numeric(gsub(",", "", mean_pop))
+
+# summary
+summary(mean_pop)
+fivenum(mean_pop)
+
+# distribution
+boxplot(mean_pop)
+stem(mean_pop)
+# can see same outliers as in the mean_km
+
+filtered_mean_pop <- mean_pop[!mean_pop > 100000]
+boxplot(filtered_mean_pop)
+stem(filtered_mean_pop)
+
+
+# plot with different bin sizes
+hist(filtered_mean_pop)
+hist(filtered_mean_pop, seq(0., 100000., 2000.0))
+rug(filtered_mean_pop)
+
+# filtering based on continent and UN region
+hist(filtered_mean_pop[!continents=="Europe"], seq(0., 100000., 2000.0))
+hist(filtered_mean_pop[!un_regions=="Oceania-Polynesia"], seq(0., 100000., 2000.0))
+
+# comparison between mean km and mean pop
+# boxplot(filtered_mean_pop, filtered_mean_km)
+  # boxplot is not good for comparison because the area measurements are way smaller than population measurements
+qqplot(filtered_mean_pop, filtered_mean_km, xlab="Mean Population", ylab="Mean SqKm")
+
 
 
